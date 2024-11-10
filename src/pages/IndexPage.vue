@@ -10,9 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Todo, Meta } from 'components/models';
 import ExampleComponent from 'components/ExampleComponent.vue';
+import { getHealth } from 'src/services/health';
 
 defineOptions({
   name: 'IndexPage'
@@ -44,4 +45,9 @@ const todos = ref<Todo[]>([
 const meta = ref<Meta>({
   totalCount: 1200
 });
+
+onMounted(async () => {
+  const response = await getHealth()
+  console.log(response.data.msg)
+})
 </script>
