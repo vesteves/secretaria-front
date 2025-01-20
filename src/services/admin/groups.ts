@@ -11,6 +11,10 @@ export const getById = async (id: number) => {
   return await api.get(`/group/${id}`);
 };
 
+export const getNextGroupsByCourseId = async (courseId: number) => {
+  return await api.get(`/group/next-groups/${courseId}`);
+};
+
 export const store = async (payload: GroupStore) => {
   return await api.post('/group', payload);
 };

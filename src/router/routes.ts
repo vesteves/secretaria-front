@@ -43,6 +43,29 @@ const routes: RouteRecordRaw[] = [
         path: 'groups/create',
         component: () => import('pages/admin/groups/GroupsStorePage.vue'),
       },
+      {
+        path: 'students',
+        component: () => import('pages/admin/students/StudentsPage.vue'),
+      },
+      {
+        path: 'students/:id',
+        component: () => import('pages/admin/students/StudentsEditPage.vue'),
+      },
+      {
+        path: 'students/create',
+        component: () => import('pages/admin/students/StudentsStorePage.vue'),
+      },
+    ],
+  },
+
+  {
+    path: '/student',
+    component: () => import('layouts/GuestLayout.vue'),
+    children: [
+      {
+        path: 'new',
+        component: () => import('pages/student/CreatePage.vue'),
+      },
     ],
   },
 
