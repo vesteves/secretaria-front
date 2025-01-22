@@ -12,10 +12,10 @@
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
-          <q-td key="summary" :props="props">
+          <q-td key="email" :props="props">
             {{ props.row.email }}
           </q-td>
-          <q-td key="description" :props="props">
+          <q-td key="phone" :props="props">
             {{ props.row.phone }}
           </q-td>
           <q-td key="edit" :props="props">
@@ -53,11 +53,11 @@ const columns = [
     field: (row: Student) => row.name,
     sortable: true,
   },
-  { name: 'summary', label: 'Resumo', field: 'summary', sortable: true },
+  { name: 'email', label: 'E-mail', field: 'email', sortable: true },
   {
-    name: 'description',
-    label: 'Descrição',
-    field: 'description',
+    name: 'phone',
+    label: 'Telefone',
+    field: 'phone',
     sortable: true,
   },
   {

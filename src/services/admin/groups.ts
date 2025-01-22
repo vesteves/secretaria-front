@@ -26,3 +26,7 @@ export const update = async (id: number, payload: GroupUpdate) => {
 export const destroy = async (id: number) => {
   return await api.delete(`/group/${id}`);
 };
+
+export const subscribe = async (id: number, payload: { is_approved: boolean, student_id: number }) => {
+  return await api.post(`/group/subscribe/${id}`, payload);
+};
