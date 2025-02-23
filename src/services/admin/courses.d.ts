@@ -4,6 +4,9 @@ export interface CourseBase {
   name: string
   summary: string
   description: string
+  position: number
+  workload: number
+  inCompany: boolean
 }
 
 export type Course = Base & CourseBase

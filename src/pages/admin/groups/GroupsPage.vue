@@ -18,9 +18,6 @@
           <q-td key="price" :props="props">
             {{ (props.row.price / 100).toFixed(2) }}
           </q-td>
-          <q-td key="discount" :props="props">
-            {{ (props.row.discount / 100).toFixed(2) }}
-          </q-td>
           <q-td key="course_id" :props="props">
             {{ props.row.course.name }}
           </q-td>
@@ -65,12 +62,6 @@ const columns = [
     name: 'price',
     label: 'Preço',
     field: 'price',
-    sortable: true,
-  },
-  {
-    name: 'discount',
-    label: 'Desconto',
-    field: 'discount',
     sortable: true,
   },
   {

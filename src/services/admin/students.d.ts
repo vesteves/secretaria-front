@@ -26,3 +26,15 @@ export type Student = Base & StudentBase
 export type StudentStore = StudentBase
 
 export type StudentUpdate = Partial<StudentBase>
+
+export enum StudentStatus {
+  PRESUBSCRIBED = 'presubscribed',
+  PAYMENTSENT = 'paymentsent',
+  SUBSCRIBED = 'subscribed',
+  APPROVED = 'approved',
+  REPROVED = 'reproved',
+  UNSUBSCRIBED = 'unsubscribed',
+}
+export interface StudentQueryParams {
+  group_id?: number
+}

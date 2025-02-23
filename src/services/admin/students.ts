@@ -1,8 +1,10 @@
 import { api } from 'src/boot/axios';
-import type { StudentStore, StudentUpdate } from './students.d';
+import type { StudentQueryParams, StudentStore, StudentUpdate } from './students.d';
 
-export const getAll = async () => {
-  return await api.get('/student');
+export const getAll = async (query: StudentQueryParams = {}) => {
+  return await api.get('/student', {
+    params: query
+  });
 };
 
 export const getById = async (id: number) => {

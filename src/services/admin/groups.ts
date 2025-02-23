@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios';
-import type { GroupStore, GroupUpdate } from './groups.d';
+import type { GroupStore, GroupUpdate, StatusData } from './groups.d';
 
 export const getAll = async (params: { course?: string } = {}) => {
   const queryParams = params.course ? '?course=true' : '';
@@ -27,6 +27,6 @@ export const destroy = async (id: number) => {
   return await api.delete(`/group/${id}`);
 };
 
-export const subscribe = async (id: number, payload: { is_approved: boolean, student_id: number }) => {
-  return await api.post(`/group/subscribe/${id}`, payload);
+export const changeStudentStatus = async (id: number, payload: StatusData) => {
+  return await api.patch(`/group/${id}/status`, payload);
 };

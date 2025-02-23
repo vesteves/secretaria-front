@@ -32,6 +32,18 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/admin/areas/AreasStorePage.vue'),
       },
       {
+        path: 'classrooms',
+        component: () => import('pages/admin/classrooms/ClassroomsPage.vue'),
+      },
+      {
+        path: 'classrooms/:id',
+        component: () => import('pages/admin/classrooms/ClassroomsEditPage.vue'),
+      },
+      {
+        path: 'classrooms/create',
+        component: () => import('pages/admin/classrooms/ClassroomsStorePage.vue'),
+      },
+      {
         path: 'courses',
         component: () => import('pages/admin/courses/CoursesPage.vue'),
       },
