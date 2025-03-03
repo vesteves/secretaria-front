@@ -3,19 +3,15 @@
     <q-form
       @submit="onSubmit"
       @reset="onReset"
-      class="q-gutter-md"
+      class="col col-md-6 q-gutter-md"
     >
       <q-input
-        rounded
-        outlined
         type="email"
         v-model="email"
         label="E-mail"
       />
 
       <q-input
-        rounded
-        outlined
         type="password"
         v-model="password"
         label="Senha"
@@ -31,11 +27,16 @@
 
 <script setup lang="ts">
 import { login } from 'src/services/auth';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
 
 defineOptions({
   name: 'LoginPage'
 });
+
+const $q = useQuasar()
+const router = useRouter()
 
 const email = ref<string>('')
 const password = ref<string>('')
@@ -46,7 +47,10 @@ const onSubmit = async () => {
       email: email.value,
       password: password.value
     })
-    console.log(result)
+    
+    $q.localStorage.set('token', result.data.token.plainTextToken)
+
+    router.push('/admin/groups')
   } catch (error: unknown) {
     console.log(error)
   }
@@ -57,8 +61,4 @@ const onReset = () => {
   password.value = ''
 }
 
-onMounted(async () => {
-  console.log('Página de login')
-})
 </script>
-

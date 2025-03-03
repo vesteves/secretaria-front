@@ -1,15 +1,25 @@
 import { RouteRecordRaw } from 'vue-router';
+import { useAdmin } from 'src/composables/useAdmin'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    component: () => import('layouts/GuestLayout.vue'),
+    children: [{ path: '', redirect: '/auth/login', }],
   },
 
   {
     path: '/auth',
     component: () => import('layouts/GuestLayout.vue'),
+    beforeEnter: async (to, from, next) => {
+      const admin = useAdmin()
+
+      if (await admin.checkAuth()) {
+        return next('/admin/groups')
+      }
+
+      return next()
+    },
     children: [
       { path: 'login', component: () => import('pages/auth/LoginPage.vue') },
     ],
@@ -18,6 +28,15 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: () => import('layouts/AdminLayout.vue'),
+    beforeEnter: async (to, from, next) => {
+      const admin = useAdmin()
+
+      if (!await admin.checkAuth()) {
+        return next('/auth/login')
+      }
+
+      return next()
+    },
     children: [
       {
         path: 'areas',

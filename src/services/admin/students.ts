@@ -11,6 +11,10 @@ export const getById = async (id: number) => {
   return await api.get(`/student/${id}`);
 };
 
+export const getByCpf = async (cpf: string) => {
+  return await api.get(`/student/${cpf}/verify`);
+};
+
 export const store = async (payload: StudentStore) => {
   return await api.post('/student', payload);
 };

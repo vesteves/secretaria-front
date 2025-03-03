@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
+import { LocalStorage } from 'quasar';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -15,6 +16,15 @@ declare module 'vue' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'http://localhost:8000/api' });
+api.interceptors.request.use(async (config) => {
+
+  const token = LocalStorage.getItem('token')
+
+  if (token !== null) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

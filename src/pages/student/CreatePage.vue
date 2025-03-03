@@ -3,74 +3,106 @@
     <h1>Seja bem vindo(a)</h1>
     <p>Aqui vc fará pré cadastro</p>
 
-    <q-form
-      @submit="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md"
-    >
-      <q-input
-        v-model="name"
-        label="Nome Completo"
-      />
+    <p>Inicialmente: informe seu CPF para verificarmos se vc já possui cadastro</p>
 
-      <q-input
-        type="email"
-        v-model="email"
-        label="E-mail"
-      />
-
-      <q-input
-        type="date"
-        v-model="birthdate"
-        label="Data de Nascimento"
-      />
-
-      <q-input
-        v-model="phone"
-        label="Número de telefone"
-      />
-
-      <q-input
-        v-model="identity"
-        label="Identidade"
-      />
-
+    <div class="flex q-gutter-md">
       <q-input
         v-model="cpf"
         label="CPF"
+        :disable="cpfVerified"
       />
 
-      <q-input
-        v-model="cep"
-        label="CEP"
+      <q-btn
+        label="Verifica"
+        @click="verifyCpf"
+        :disable="cpfVerified"
       />
 
-      <q-input
-        v-model="address"
-        label="Endereço"
-      />
+      <q-btn label="Alterar CPF" @click="changeCpf" />
+    </div>
 
-      <q-select
-        v-model="education"
-        :options="educationOptions"
-        label="Qual sua escolaridade?"
-      />
+    <div v-if="cpfVerified" class="q-gutter-md">
+      <template v-if="!isStudent">
+        <q-input
+          v-model="name"
+          label="Nome Completo"
+        />
 
-      <q-input
-        v-model="graduate"
-        label="Se você já é graduado ou se está se graduando, pode nos informar em qual curso?"
-      />
-      
-      <q-input
-        v-model="workspace"
-        label="Qual sua área de trabalho atual?"
-      />
+        <q-input
+          type="email"
+          v-model="email"
+          label="E-mail"
+        />
+
+        <q-input
+          type="date"
+          v-model="birthdate"
+          label="Data de Nascimento"
+        />
+
+        <q-input
+          v-model="phone"
+          label="Número de telefone"
+        />
+
+        <q-input
+          v-model="identity"
+          label="Identidade"
+        />
+
+        <q-input
+          v-model="cep"
+          label="CEP"
+        />
+
+        <q-input
+          v-model="address"
+          label="Endereço"
+        />
+
+        <q-select
+          v-model="education"
+          :options="educationOptions"
+          label="Qual sua escolaridade?"
+        />
+
+        <q-input
+          v-model="graduate"
+          label="Se você já é graduado ou se está se graduando, pode nos informar em qual curso?"
+        />
+        
+        <q-input
+          v-model="workspace"
+          label="Qual sua área de trabalho atual?"
+        />
+
+        <q-select
+          v-model="discover"
+          :options="discoverOptions"
+          label="Como você ficou sabendo do nosso curso?"
+        />
+
+        <q-select
+          v-model="google"
+          :options="[
+            'Sim',
+            'Não',
+          ]"
+          label="Você pesquisou no Google?"
+        />
+
+        <q-input
+          v-model="deficit"
+          label="Você tem alguma deficiência? Se sim, qual?"
+        />
+      </template>
 
       <q-select
         v-model="course"
         :options="courseOptions"
         :option-value="(item) => item.id"
         :option-label="(item) => item.name"
+        :disable="courseDisabled"
         @update:model-value="getGroups()"
         label="Curso escolhido aqui na COTI"
       />
@@ -80,6 +112,7 @@
         :options="groupOptions"
         :option-value="(item) => item.id"
         :option-label="(item) => `${date.formatDate(item.start, 'DD/MM/YYYY HH:mm')} - ${date.formatDate(item.end, 'DD/MM/YYYY HH:mm')}`"
+        :disable="groupDisabled"
         label="Horário da turma"
       />
 
@@ -90,36 +123,17 @@
       />
 
       <q-select
+        v-if="!route.query.experimental"
         v-model="payment"
         :options="paymentOptions"
         label="Forma de Pagamento"
       />
 
-      <q-select
-        v-model="discover"
-        :options="discoverOptions"
-        label="Como você ficou sabendo do nosso curso?"
-      />
-
-      <q-select
-        v-model="google"
-        :options="[
-          'Sim',
-          'Não',
-        ]"
-        label="Você pesquisou no Google?"
-      />
-
-      <q-input
-        v-model="deficit"
-        label="Você tem alguma deficiência? Se sim, qual?"
-      />
-
       <div>
-        <q-btn label="Submit" type="submit" color="primary"/>
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn label="Submit" @click="onSubmit" color="primary"/>
+        <q-btn label="Reset" @click="onReset" color="primary" flat class="q-ml-sm" />
       </div>
-    </q-form>
+    </div>
   </q-page>
 </template>
 
@@ -128,17 +142,23 @@ import { date } from 'quasar'
 import { getAll as getCourses } from 'src/services/admin/courses';
 import { getNextGroupsByCourseId } from 'src/services/admin/groups';
 import type { Course }  from 'src/services/admin/courses.d';
-import { store } from 'src/services/admin/students';
+import { store, getByCpf } from 'src/services/admin/students';
 import type { Group }  from 'src/services/admin/groups.d';
 import { onMounted, ref } from 'vue';
+import { StudentStore } from 'src/services/admin/students.d';
+import { useRoute } from 'vue-router';
 
 defineOptions({
   name: 'StudentCreatePage'
 });
 
+const route = useRoute()
+
 const courseOptions = ref<Course[]>([])
 const groupOptions = ref<Group[]>([])
 
+const isStudent = ref<boolean>(false)
+const cpfVerified = ref<boolean>(false)
 const name = ref<string>('')
 const email = ref<string>('')
 const birthdate = ref<string>('')
@@ -157,6 +177,9 @@ const payment = ref<string>('')
 const discover = ref<string>('')
 const google = ref<string>('Não')
 const deficit = ref<string>('')
+
+const courseDisabled = ref<boolean>(false)
+const groupDisabled = ref<boolean>(false)
 
 const paymentOptions = [
   'À vista',
@@ -191,10 +214,16 @@ const educationOptions = [
   'Pós Graduação Incompleta'
 ]
 
-onMounted(async () => {
-  const { data } = await getCourses()
-  courseOptions.value = data
-})
+const verifyCpf = async () => {
+  const response = await getByCpf(cpf.value);
+  isStudent.value = response.data.cpf ? true : false
+  cpfVerified.value = true
+}
+
+const changeCpf = () => {
+  cpfVerified.value = false
+  isStudent.value = false
+}
 
 const getGroups = async () => {
   groupOptions.value = []
@@ -212,27 +241,30 @@ const onSubmit = async () => {
   }
 
   try {
-    const result = await store({
-      name: name.value,
-      email: email.value,
-      birthdate: birthdate.value,
-      phone: phone.value,
-      identity: identity.value,
+    const data: StudentStore = {
       cpf: cpf.value,
-      cep: cep.value,
-      address: address.value,
-      education: education.value,
-      graduate: graduate.value,
-      workspace: workspace.value,
       course_id: course.value.id,
       group_id: group.value.id,
       modality: modality.value,
       payment: payment.value,
-      discover: discover.value,
-      google: google.value === 'Sim',
-      deficit: deficit.value,
-    })
-    console.log(result)
+    }
+
+    if (!isStudent.value) {
+      data.name = name.value
+      data.email = email.value
+      data.birthdate = birthdate.value
+      data.phone = phone.value
+      data.identity = identity.value
+      data.cep = cep.value
+      data.address = address.value
+      data.education = education.value
+      data.graduate = graduate.value
+      data.workspace = workspace.value
+      data.discover = discover.value
+      data.google = google.value === 'Sim'
+      data.deficit = deficit.value
+    }
+    await store(data)
   } catch (error: unknown) {
     console.log(error)
   }
@@ -260,7 +292,32 @@ const onReset = () => {
 }
 
 onMounted(async () => {
-  console.log('Página de pré-cadastro')
+  const { data } = await getCourses()
+  courseOptions.value = data
+
+  if(route.query.group_id && route.query.course_id) {
+    const courseFound = courseOptions.value.find(course => course.id === Number(route.query.course_id))
+    
+    if (courseFound) {
+      course.value = courseFound
+
+      const { data } = await getNextGroupsByCourseId(course.value.id);
+      groupOptions.value = data
+
+      const groupFound = groupOptions.value.find(group => group.id === Number(route.query.group_id))
+      
+      if (groupFound) {
+        group.value = groupFound
+      }
+
+      if (route.query.experimental) {
+        payment.value = 'experimental'
+      }
+
+      courseDisabled.value = true
+      groupDisabled.value = true
+    }
+  }
 })
 </script>
 
