@@ -98,6 +98,18 @@ const routes: RouteRecordRaw[] = [
         path: 'students/create',
         component: () => import('pages/admin/students/StudentsStorePage.vue'),
       },
+      {
+        path: 'users',
+        component: () => import('pages/admin/users/UsersPage.vue'),
+      },
+      {
+        path: 'users/:id',
+        component: () => import('pages/admin/users/UsersEditPage.vue'),
+      },
+      {
+        path: 'users/create',
+        component: () => import('pages/admin/users/UsersStorePage.vue'),
+      },
     ],
   },
 

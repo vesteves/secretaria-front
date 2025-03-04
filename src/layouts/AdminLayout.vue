@@ -70,6 +70,12 @@ const linksList: EssentialLinkProps[] = [
     icon: 'school',
     link: '/admin/classrooms',
   },
+  {
+    title: 'Usuários',
+    caption: 'Usuários do sistema',
+    icon: 'school',
+    link: '/admin/users',
+  },
 ];
 
 const leftDrawerOpen = ref(false);
