@@ -47,6 +47,18 @@ defineOptions({
 
 const linksList: EssentialLinkProps[] = [
   {
+    title: 'Áreas',
+    caption: 'Divisão de Áreas',
+    icon: 'school',
+    link: '/admin/areas',
+  },
+  {
+    title: 'Contratos',
+    caption: 'Adminsitração de Contratos',
+    icon: 'school',
+    link: '/admin/contracts',
+  },
+  {
     title: 'Cursos',
     caption: 'Adminsitração de Cursos',
     icon: 'school',
@@ -57,12 +69,6 @@ const linksList: EssentialLinkProps[] = [
     caption: 'Adminsitração de Turmas',
     icon: 'school',
     link: '/admin/groups',
-  },
-  {
-    title: 'Áreas',
-    caption: 'Divisão de Áreas',
-    icon: 'school',
-    link: '/admin/areas',
   },
   {
     title: 'Salas',
