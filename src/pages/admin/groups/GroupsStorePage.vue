@@ -38,13 +38,24 @@
         />
       </div>
 
-      <q-checkbox v-model="frequency" val="domingo" label="Domingo" />
-      <q-checkbox v-model="frequency" val="segunda" label="Segunda" />
-      <q-checkbox v-model="frequency" val="terca" label="Terça" />
-      <q-checkbox v-model="frequency" val="quarta" label="Quarta" />
-      <q-checkbox v-model="frequency" val="quinta" label="Quinta" />
-      <q-checkbox v-model="frequency" val="sexta" label="Sexta" />
-      <q-checkbox v-model="frequency" val="sabado" label="Sábado" />
+      <div>
+        <label>Frequência</label>
+
+        <q-checkbox v-model="frequency" val="domingo" label="Domingo" />
+        <q-checkbox v-model="frequency" val="segunda" label="Segunda" />
+        <q-checkbox v-model="frequency" val="terca" label="Terça" />
+        <q-checkbox v-model="frequency" val="quarta" label="Quarta" />
+        <q-checkbox v-model="frequency" val="quinta" label="Quinta" />
+        <q-checkbox v-model="frequency" val="sexta" label="Sexta" />
+        <q-checkbox v-model="frequency" val="sabado" label="Sábado" />
+      </div>
+
+      <div>
+        <label>Modalidade</label>
+
+        <q-checkbox v-model="modalities" val="presencial" label="Presencial" />
+        <q-checkbox v-model="modalities" val="ao_vivo" label="Ao vivo" />
+      </div>
 
       <div>
         <q-btn label="Submit" type="submit" color="primary" />
@@ -88,6 +99,7 @@ const classroom = ref<Classroom | null>(null);
 const classrooms = ref<Classroom[]>([])
 const teacher = ref<string>('')
 const inCompany = ref<boolean>(false)
+const modalities = ref<string[]>([])
 
 const fetchCourses = async () => {
   const result = await getAll();
@@ -119,6 +131,7 @@ const onSubmit = async () => {
       classroom_id: classroom.value?.id,
       teacher: teacher.value,
       inCompany: inCompany.value,
+      modalities: modalities.value,
     });
     console.log(result);
     await router.push('/admin/groups');

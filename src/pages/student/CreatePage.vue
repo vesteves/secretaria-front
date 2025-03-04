@@ -117,12 +117,6 @@
       />
 
       <q-select
-        v-model="modality"
-        :options="modalityOptions"
-        label="Modalidade"
-      />
-
-      <q-select
         v-if="!route.query.experimental"
         v-model="payment"
         :options="paymentOptions"
@@ -172,7 +166,6 @@ const graduate = ref<string>('')
 const workspace = ref<string>('')
 const course = ref<Course | null>(null)
 const group = ref<Group | null>(null)
-const modality = ref<string>('')
 const payment = ref<string>('')
 const discover = ref<string>('')
 const google = ref<string>('Não')
@@ -186,11 +179,6 @@ const paymentOptions = [
   'Cartão de Crédito',
   'Boleto',
   'Empenho',
-]
-
-const modalityOptions = [
-  'Presencial',
-  'Online (Ao Vivo)',
 ]
 
 const discoverOptions = [
@@ -245,7 +233,6 @@ const onSubmit = async () => {
       cpf: cpf.value,
       course_id: course.value.id,
       group_id: group.value.id,
-      modality: modality.value,
       payment: payment.value,
     }
 
@@ -284,7 +271,6 @@ const onReset = () => {
   workspace.value = ''
   course.value = null
   group.value = null
-  modality.value = ''
   payment.value = ''
   discover.value = ''
   google.value = 'Não'

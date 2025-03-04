@@ -10,6 +10,7 @@ export interface GroupBase {
   teacher: string;
   inCompany: boolean;
   classroom_id?: number;
+  modalities: string[];
 }
 
 export type Group = Base & GroupBase;
@@ -23,4 +24,5 @@ export interface StatusData {
   student_id: number
   price?: number
   links?: string
+  motivation: string
 }

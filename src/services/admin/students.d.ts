@@ -4,7 +4,6 @@ export interface StudentBase {
   cpf: string
   course_id: number
   group_id: number
-  modality: string
   payment: string
   name?: string
   email?: string
@@ -34,6 +33,7 @@ export enum StudentStatus {
   APPROVED = 'approved',
   REPROVED = 'reproved',
   UNSUBSCRIBED = 'unsubscribed',
+  CANCELED = 'canceled',
 }
 export interface StudentQueryParams {
   group_id?: number

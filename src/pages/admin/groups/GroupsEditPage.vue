@@ -43,13 +43,24 @@
         />
       </div>
 
-      <q-checkbox v-model="frequency" val="domingo" label="Domingo" />
-      <q-checkbox v-model="frequency" val="segunda" label="Segunda" />
-      <q-checkbox v-model="frequency" val="terca" label="Terça" />
-      <q-checkbox v-model="frequency" val="quarta" label="Quarta" />
-      <q-checkbox v-model="frequency" val="quinta" label="Quinta" />
-      <q-checkbox v-model="frequency" val="sexta" label="Sexta" />
-      <q-checkbox v-model="frequency" val="sabado" label="Sábado" />
+      <div>
+        <label>Frequência</label>
+        
+        <q-checkbox v-model="frequency" val="domingo" label="Domingo" />
+        <q-checkbox v-model="frequency" val="segunda" label="Segunda" />
+        <q-checkbox v-model="frequency" val="terca" label="Terça" />
+        <q-checkbox v-model="frequency" val="quarta" label="Quarta" />
+        <q-checkbox v-model="frequency" val="quinta" label="Quinta" />
+        <q-checkbox v-model="frequency" val="sexta" label="Sexta" />
+        <q-checkbox v-model="frequency" val="sabado" label="Sábado" />
+      </div>
+
+      <div>
+        <label>Modalidade</label>
+        
+        <q-checkbox v-model="modalities" val="presencial" label="Presencial" />
+        <q-checkbox v-model="modalities" val="ao_vivo" label="Ao vivo" />
+      </div>
 
       <div>
         <q-table :columns="columns" :rows="rows" row-key="name" title="Alunos">
@@ -84,6 +95,14 @@
                   label="Ativar"
                   class="q-ml-sm"
                   @click="openPaymentConfirm(props.row.id)"
+                />
+              </q-td>
+              <q-td key="cancel" :props="props">
+                <q-btn
+                  color="primary"
+                  label="Cancelar"
+                  class="q-ml-sm"
+                  @click="openCancelConfirm(props.row.id)"
                 />
               </q-td>
               <q-td key="remove" :props="props">
@@ -162,6 +181,31 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="confirmCancel" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <div class="col">
+            <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
+            <span class="q-ml-sm">Confirmar cancelamento do aluno?</span>
+
+            <div>
+              <q-input
+                type="textarea"
+                v-model="motivation"
+                label="Motivo"
+              />
+            </div>
+          </div>
+          
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Não" color="primary" v-close-popup />
+          <q-btn flat label="Sim" color="primary" @click="changeStatus(StudentStatus.CANCELED)" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -184,6 +228,7 @@ const course = ref<Course | null>(null);
 const courses = ref<Course[]>([]);
 const confirmPresubscribe = ref<boolean>(false)
 const confirmPayment = ref<boolean>(false)
+const confirmCancel = ref<boolean>(false)
 const studentSelected = ref<number | null>(null)
 const studentPrice = ref<string>('')
 const paymentLink = ref<string>('')
@@ -192,6 +237,8 @@ const classroom = ref<Classroom | null>(null);
 const classrooms = ref<Classroom[]>([])
 const teacher = ref<string>('')
 const inCompany = ref<boolean>(false)
+const modalities = ref<string[]>([])
+const motivation = ref<string>('')
 
 const route = useRoute();
 const router = useRouter();
@@ -233,6 +280,7 @@ const onSubmit = async () => {
       teacher: teacher.value,
       inCompany: inCompany.value,
       frequency: frequency.value,
+      modalities: modalities.value,
     });
     await router.push('/admin/groups');
   } catch (error: unknown) {
@@ -283,6 +331,11 @@ const columns = [
     field: 'paymentConfirm',
   },
   {
+    name: 'cancel',
+    label: 'Cancelar',
+    field: 'cancel',
+  },
+  {
     name: 'remove',
     label: 'Remover',
     field: 'remove',
@@ -306,10 +359,16 @@ const openPaymentConfirm = (id: number) => {
   confirmPayment.value = true
 }
 
+const openCancelConfirm = (id: number) => {
+  studentSelected.value = id
+  confirmCancel.value = true
+}
+
 const changeStatus = async (status: StudentStatus) => {
   const statusData: StatusData = {
     status,
     student_id: studentSelected.value!,
+    motivation: motivation.value,
   }
 
   if (status === StudentStatus.PAYMENTSENT) {
@@ -342,6 +401,7 @@ onMounted(async () => {
   frequency.value = result.data.frequency;
   teacher.value = result.data.teacher;
   inCompany.value = result.data.inCompany === 1;
+  modalities.value = result.data.modalities;
   course.value =
     (courses.value as Course[])
       .map((course) => ({
