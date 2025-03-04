@@ -174,6 +174,23 @@
           <span class="q-ml-sm">Confirmar pagamento do aluno?</span>
         </q-card-section>
 
+        <q-card-section>
+          <q-input
+            v-model="sponsor"
+            label="Responsável"
+          />
+
+          <q-input
+            v-model="paymentDetails"
+            label="Detalhes do pagamento"
+          />
+
+          <q-input
+            v-model="witness"
+            label="Testemunha"
+          />
+        </q-card-section>
+
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
           <q-btn flat label="Sim" color="primary" @click="changeStatus(StudentStatus.SUBSCRIBED)" v-close-popup />
@@ -239,6 +256,9 @@ const teacher = ref<string>('')
 const inCompany = ref<boolean>(false)
 const modalities = ref<string[]>([])
 const motivation = ref<string>('')
+const sponsor = ref<string>('')
+const paymentDetails = ref<string>('')
+const witness = ref<string>('')
 
 const route = useRoute();
 const router = useRouter();
@@ -369,6 +389,9 @@ const changeStatus = async (status: StudentStatus) => {
     status,
     student_id: studentSelected.value!,
     motivation: motivation.value,
+    sponsor: sponsor.value,
+    payment_details: paymentDetails.value,
+    witness: witness.value,
   }
 
   if (status === StudentStatus.PAYMENTSENT) {

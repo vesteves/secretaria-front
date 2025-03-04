@@ -25,4 +25,7 @@ export interface StatusData {
   price?: number
   links?: string
   motivation: string
+  sponsor: string
+  payment_details: string
+  witness: string
 }
